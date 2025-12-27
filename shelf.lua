@@ -14,11 +14,22 @@ core.register_node("mydisplay:shelf", {
     on_rightclick = function(pos, node, clicker, itemstack)
         local meta = core.get_meta(pos)
         local current = meta:get_string("item")
-        if core.is_protected(pos, clicker:get_player_name()) then return itemstack end
+        local owner = meta:get_string("owner")
+        local player_name = clicker:get_player_name()
+
+        if core.is_protected(pos, player_name) then return itemstack end
 
         if current ~= "" then
+            -- OWNER LOCK
+            if owner ~= "" and owner ~= player_name then
+                core.chat_send_player(player_name, core.colorize("#FF0000", "This item belongs to " .. owner .. "!"))
+                return itemstack
+            end
+
             local inv = clicker:get_inventory()
             local stack = ItemStack(current)
+            stack:set_count(1)
+            
             if clicker:get_wielded_item():get_count() == 0 then
                 clicker:set_wielded_item(stack)
             else
@@ -26,13 +37,18 @@ core.register_node("mydisplay:shelf", {
                 if not leftover:is_empty() then core.add_item(pos, leftover) end
             end
             meta:set_string("item", "")
+            meta:set_string("owner", "")
             mydisplay_clear_display_entities(pos)
             return clicker:get_wielded_item()
         end
 
         local name = itemstack:get_name()
         if name ~= "" then
-            meta:set_string("item", itemstack:to_string())
+            local temp_stack = ItemStack(itemstack)
+            temp_stack:set_count(1)
+            meta:set_string("item", temp_stack:to_string())
+            meta:set_string("owner", player_name)
+            
             local obj = core.add_entity(mydisplay_get_shelf_offset(pos), "mydisplay:display_item", name)
             if obj then 
                 local ent = obj:get_luaentity()
@@ -73,12 +89,4 @@ core.register_node("mydisplay:shelf", {
         mydisplay_clear_display_entities(pos)
         mydisplay_drop_item(pos, item)
     end,
-})
-
-core.register_craft({
-    output = "mydisplay:shelf 2",
-    recipe = {
-        {"group:wood", "group:wood", "group:wood"},
-        {"", "group:wood", ""},
-    }
 })
