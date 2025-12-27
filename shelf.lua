@@ -34,7 +34,12 @@ core.register_node("mydisplay:shelf", {
         if name ~= "" then
             meta:set_string("item", itemstack:to_string())
             local obj = core.add_entity(mydisplay_get_shelf_offset(pos), "mydisplay:display_item", name)
-            if obj then obj:get_luaentity().itemstring = name end
+            if obj then 
+                local ent = obj:get_luaentity()
+                ent.itemstring = name
+                local rot = core.facedir_to_dir(node.param2)
+                obj:set_yaw(core.dir_to_yaw(rot))
+            end
             if not core.settings:get_bool("creative_mode") then itemstack:take_item(1) end
             core.get_node_timer(pos):start(5)
             return itemstack
@@ -42,6 +47,7 @@ core.register_node("mydisplay:shelf", {
     end,
 
     on_timer = function(pos)
+        local node = core.get_node(pos)
         local meta = core.get_meta(pos)
         local item_str = meta:get_string("item")
         if item_str == "" then return false end
@@ -53,7 +59,11 @@ core.register_node("mydisplay:shelf", {
         if not found then
             local stack = ItemStack(item_str)
             local obj = core.add_entity(mydisplay_get_shelf_offset(pos), "mydisplay:display_item", stack:get_name())
-            if obj then obj:get_luaentity().itemstring = stack:get_name() end
+            if obj then 
+                obj:get_luaentity().itemstring = stack:get_name()
+                local rot = core.facedir_to_dir(node.param2)
+                obj:set_yaw(core.dir_to_yaw(rot))
+            end
         end
         return true
     end,
@@ -64,6 +74,7 @@ core.register_node("mydisplay:shelf", {
         mydisplay_drop_item(pos, item)
     end,
 })
+
 core.register_craft({
     output = "mydisplay:shelf 2",
     recipe = {
