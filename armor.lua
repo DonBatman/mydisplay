@@ -96,13 +96,11 @@ minetest.register_node("mydisplay:armor_rack", {
         local name = player:get_player_name()
         local owner = meta:get_string("owner")
 
-        -- 1. Check if the inventory is empty
         if not inv:is_empty("armor_slots") then
             minetest.chat_send_player(name, "You cannot dig the rack while it contains armor!")
             return false
         end
 
-        -- 2. Check Ownership
         if owner ~= "" and name ~= owner and not minetest.check_player_privs(name, "protection_bypass") then
             minetest.chat_send_player(name, "This armor rack belongs to " .. owner)
             return false

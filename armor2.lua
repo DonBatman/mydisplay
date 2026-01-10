@@ -30,7 +30,6 @@ local function update_rack_visuals2(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     
-    -- 1. Increase radius to 0.5 to find entities that were moved toward the wall
     local objects = minetest.get_objects_inside_radius(pos, 0.5)
     for _, obj in ipairs(objects) do
         local ent = obj:get_luaentity()
@@ -44,16 +43,13 @@ local function update_rack_visuals2(pos)
     local node = minetest.get_node(pos)
     local dir = minetest.facedir_to_dir(node.param2)
     
-    -- 2. Calculate offset (Use -0.3 to push it BACK toward the wall)
-    local offset = vector.multiply(dir, 0.25)
+    local offset = vector.multiply(dir, 0.23)
     local spawn_pos = vector.add(pos, offset)
     
-    -- 3. ONLY spawn the entity ONCE at the spawn_pos
     local ent_obj = minetest.add_entity(spawn_pos, "mydisplay:visual_armor2")
     
     if ent_obj then
-        -- Set rotation
-        ent_obj:set_yaw(minetest.dir_to_yaw(dir))-- + math.pi)
+        ent_obj:set_yaw(minetest.dir_to_yaw(dir))
     
         local textures = {}
         for i=1, 4 do
@@ -103,13 +99,11 @@ minetest.register_node("mydisplay:armor_rack2", {
         local name = player:get_player_name()
         local owner = meta:get_string("owner")
 
-        -- 1. Check if the inventory is empty
         if not inv:is_empty("armor_slots") then
             minetest.chat_send_player(name, "You cannot dig the rack while it contains armor!")
             return false
         end
 
-        -- 2. Check Ownership
         if owner ~= "" and name ~= owner and not minetest.check_player_privs(name, "protection_bypass") then
             minetest.chat_send_player(name, "This armor rack belongs to " .. owner)
             return false
