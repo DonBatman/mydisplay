@@ -6,6 +6,8 @@ dofile(core.get_modpath("mydisplay") .. "/shelf.lua")
 dofile(core.get_modpath("mydisplay") .. "/pedestal.lua")
 dofile(core.get_modpath("mydisplay") .. "/magic.lua")
 dofile(core.get_modpath("mydisplay") .. "/tool.lua")
+dofile(core.get_modpath("mydisplay") .. "/armor.lua")
+dofile(core.get_modpath("mydisplay") .. "/armor2.lua")
 
 
 core.register_lbm({
