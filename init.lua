@@ -67,3 +67,17 @@ on_step = function(self, dtime)
         end
     end,
 })
+
+
+if core.get_modpath("lucky_block") then
+	lucky_block:add_blocks({
+		{"dro", {"mydisplay:armor_rack"}, 1},
+		{"dro", {"mydisplay:armor_rack2"}, 1},
+		{"dro", {"mydisplay:display_case"}, 1},
+		{"dro", {"mydisplay:magic_display"}, 1},
+		{"dro", {"mydisplay:pedestal"}, 1},
+		{"dro", {"mydisplay:item_frame"}, 1},
+		{"dro", {"mydisplay:weapon_rack"}, 1},
+		{"dro", {"mydisplay:shelf"}, 1},
+	})
+end
